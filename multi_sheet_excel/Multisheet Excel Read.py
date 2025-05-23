@@ -1,4 +1,9 @@
 # Databricks notebook source
+# MAGIC %md
+# MAGIC This function reads all Excel files from a specified DBFS directory, iterates through each sheet in every file, converts the sheet data into Spark DataFrames, structures them as key-value maps (with sheet identifiers as keys and row-wise data as values), and writes the combined result to a Delta table named multiSheetexcel. It handles unnamed sheets with generic names and avoids multiple writes by batching all data before saving.  ****
+
+# COMMAND ----------
+
 import os  # Import the os module for interacting with the operating system
 import json  # Import the json module for working with JSON data
 from pyspark.sql.types import StructType, StructField, StringType, MapType  # Import necessary Spark SQL types

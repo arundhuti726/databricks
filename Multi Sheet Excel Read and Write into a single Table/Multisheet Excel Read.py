@@ -3,6 +3,24 @@
 
 # COMMAND ----------
 
+# MAGIC %md
+# MAGIC This code reads all .xlsx files from a specified Databricks directory. 
+# MAGIC For each file and sheet, it converts the data into a dictionary format using the sheet name and filename as a key. 
+# MAGIC Each row is stored as a key-value pair inside a Spark MapType column. 
+# MAGIC All processed data is appended to a Delta table named multiSheetexcel, enabling structured storage and querying of multi-sheet Excel data in Spark.
+
+# COMMAND ----------
+
+# MAGIC %md
+# MAGIC - **Step   	Action**
+# MAGIC - 1	    Scan a directory for .xlsx files
+# MAGIC - 2	    For each file, loop through each sheet
+# MAGIC - 3	    Convert the sheet data into a Spark MapType (nested dictionary)
+# MAGIC - 4	    Write the processed data into a Delta table
+# MAGIC
+
+# COMMAND ----------
+
 import os  # Import the os module for interacting with the operating system
 import json  # Import the json module for working with JSON data
 from pyspark.sql.types import StructType, StructField, StringType, MapType  # Import necessary Spark SQL types
