@@ -6,15 +6,19 @@
   }, {
     "name" : "9b146edd",
     "displayName" : "Top 10 by Make",
-    "query" : "select yearsold as Year_Sold, Make, Count(*) as Count \r\nfrom dev_edh.dummy.car_sales_enhanced\r\n--where yearsold = '2018'\r\ngroup by Year_Sold,  Make \r\norder by Count desc \r\nlimit 200"
+    "query" : "\r\nselect yearsold as Year_Sold, Make, Count(*) as Count \r\nfrom dev_edh.dummy.car_sales_enhanced\r\n--where yearsold = '2018'\r\ngroup by Year_Sold,  Make \r\norder by Count desc \r\nlimit 10"
   }, {
     "name" : "18c31d15",
     "displayName" : "Top Saler",
     "query" : "with list_makers as (\r\n    select Make, count(*) \r\n    from dev_edh.dummy.car_sales_enhanced\r\n    group by Make\r\n    order by count(*) desc\r\n    limit 10\r\n) \r\nselect a.yearsold as `Sale Year`, a.Make as `Maker`, a.pricesold as `Sale Price`, count(*) as `Count` \r\nfrom dev_edh.dummy.car_sales_enhanced a\r\ninner join list_makers b on a.Make = b.Make\r\ngroup by a.yearsold, a.Make, a.pricesold"
+  }, {
+    "name" : "dbd5fa59",
+    "displayName" : "US_States",
+    "query" : "SELECT \r\n    yearsold AS sale_year,\r\n    'US' AS country,\r\n    CONCAT('US-', state_sold) AS US_state,\r\n    state_sold,\r\n    SUM(pricesold) AS total_sales\r\nFROM \r\n    dev_edh.dummy.car_sales_enhanced\r\nGROUP BY \r\n    yearsold, state_sold"
   } ],
   "pages" : [ {
     "name" : "1b9adad2",
-    "displayName" : "Used Car Sale Analysis",
+    "displayName" : "Used Car Sale Analysis_with Notification",
     "layout" : [ {
       "widget" : {
         "name" : "bd4ffd53",
@@ -63,7 +67,7 @@
       },
       "position" : {
         "x" : 0,
-        "y" : 3,
+        "y" : 5,
         "width" : 1,
         "height" : 2
       }
@@ -116,7 +120,7 @@
       },
       "position" : {
         "x" : 1,
-        "y" : 3,
+        "y" : 5,
         "width" : 1,
         "height" : 2
       }
@@ -169,7 +173,7 @@
       },
       "position" : {
         "x" : 2,
-        "y" : 3,
+        "y" : 5,
         "width" : 1,
         "height" : 2
       }
@@ -222,7 +226,7 @@
       },
       "position" : {
         "x" : 3,
-        "y" : 3,
+        "y" : 5,
         "width" : 1,
         "height" : 2
       }
@@ -275,7 +279,7 @@
       },
       "position" : {
         "x" : 4,
-        "y" : 3,
+        "y" : 5,
         "width" : 1,
         "height" : 2
       }
@@ -328,7 +332,7 @@
       },
       "position" : {
         "x" : 5,
-        "y" : 3,
+        "y" : 5,
         "width" : 1,
         "height" : 2
       }
@@ -384,7 +388,7 @@
       },
       "position" : {
         "x" : 0,
-        "y" : 2,
+        "y" : 4,
         "width" : 2,
         "height" : 1
       }
@@ -423,7 +427,7 @@
       },
       "position" : {
         "x" : 2,
-        "y" : 2,
+        "y" : 4,
         "width" : 2,
         "height" : 1
       }
@@ -462,7 +466,7 @@
       },
       "position" : {
         "x" : 4,
-        "y" : 2,
+        "y" : 4,
         "width" : 2,
         "height" : 1
       }
@@ -495,24 +499,31 @@
               "scale" : {
                 "type" : "quantitative"
               },
-              "axis" : {
-                "title" : "Total Count"
-              },
-              "format" : {
-                "type" : "number-plain",
-                "abbreviation" : "compact",
-                "decimalPlaces" : {
-                  "type" : "exact",
-                  "places" : 2
-                },
-                "hideGroupSeparator" : false
-              },
-              "displayName" : "Total Count"
+              "displayName" : "Sum of Count"
             },
             "color" : {
               "fieldName" : "Make",
               "scale" : {
-                "type" : "categorical"
+                "type" : "categorical",
+                "mappings" : [ {
+                  "value" : "Cadillac",
+                  "color" : "#6bf5d9"
+                }, {
+                  "value" : "BMW",
+                  "color" : "#75c29e"
+                }, {
+                  "value" : "Dodge",
+                  "color" : "#099fe4"
+                }, {
+                  "value" : "Toyota",
+                  "color" : "#21c4ff"
+                }, {
+                  "value" : "Mercedes-Benz",
+                  "color" : "#339995"
+                }, {
+                  "value" : "Ford",
+                  "color" : "#7cd873"
+                } ]
               },
               "displayName" : "Make"
             }
@@ -521,7 +532,7 @@
       },
       "position" : {
         "x" : 0,
-        "y" : 5,
+        "y" : 7,
         "width" : 2,
         "height" : 6
       }
@@ -578,7 +589,7 @@
       },
       "position" : {
         "x" : 0,
-        "y" : 11,
+        "y" : 13,
         "width" : 3,
         "height" : 6
       }
@@ -636,7 +647,16 @@
                   "color" : "#135891"
                 }, {
                   "value" : "80000-100000",
-                  "color" : "#aa189e"
+                  "color" : "#198fc9"
+                }, {
+                  "value" : "20000-40000",
+                  "color" : {
+                    "themeColorType" : "visualizationColors",
+                    "position" : 7
+                  }
+                }, {
+                  "value" : "60000-80000",
+                  "color" : "#62f0f0"
                 } ]
               },
               "displayName" : "MileageBracket"
@@ -650,7 +670,7 @@
       },
       "position" : {
         "x" : 2,
-        "y" : 5,
+        "y" : 7,
         "width" : 4,
         "height" : 6
       }
@@ -710,20 +730,78 @@
       },
       "position" : {
         "x" : 3,
-        "y" : 11,
+        "y" : 13,
         "width" : 3,
         "height" : 6
       }
     }, {
       "widget" : {
         "name" : "7b8eb3a9",
-        "textbox_spec" : "# USED CAR SALES IN UNITED STATES\n\n### By Arundhuti"
+        "textbox_spec" : " # USED CAR SALES                                                             ![Image](https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQe7AO7NjTc-q2mC-SbrILMsL1Vf8NmYQGwgw&s)   IN UNITED STATES                                                                                               \n_By Arundhuti_\n"
+      },
+      "position" : {
+        "x" : 1,
+        "y" : 0,
+        "width" : 4,
+        "height" : 4
+      }
+    }, {
+      "widget" : {
+        "name" : "c267c2f0",
+        "queries" : [ {
+          "name" : "main_query",
+          "query" : {
+            "datasetName" : "dbd5fa59",
+            "fields" : [ {
+              "name" : "sum(total_sales)",
+              "expression" : "SUM(`total_sales`)"
+            }, {
+              "name" : "country",
+              "expression" : "`country`"
+            }, {
+              "name" : "US_state",
+              "expression" : "`US_state`"
+            } ],
+            "disaggregated" : false
+          }
+        } ],
+        "spec" : {
+          "version" : 1,
+          "widgetType" : "choropleth-map",
+          "encodings" : {
+            "color" : {
+              "fieldName" : "sum(total_sales)",
+              "scale" : {
+                "type" : "quantitative"
+              },
+              "displayName" : "Sum of total_sales"
+            },
+            "region" : {
+              "regionType" : "mapbox-v4-admin",
+              "admin0" : {
+                "fieldName" : "country",
+                "type" : "field",
+                "geographicRole" : "admin0-unit-code",
+                "displayName" : "country"
+              },
+              "admin1" : {
+                "fieldName" : "US_state",
+                "type" : "field",
+                "geographicRole" : "admin1-iso-3166-2",
+                "displayName" : "US_state"
+              }
+            }
+          },
+          "mark" : {
+            "opacity" : 0.57
+          }
+        }
       },
       "position" : {
         "x" : 0,
-        "y" : 0,
-        "width" : 6,
-        "height" : 2
+        "y" : 19,
+        "width" : 4,
+        "height" : 10
       }
     } ],
     "pageType" : "PAGE_TYPE_CANVAS"

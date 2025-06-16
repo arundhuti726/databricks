@@ -21,6 +21,12 @@
 
 # COMMAND ----------
 
+# MAGIC %sql
+# MAGIC use catalog dev_edh;
+# MAGIC use schema dummy;
+
+# COMMAND ----------
+
 import os  # Import the os module for interacting with the operating system
 import json  # Import the json module for working with JSON data
 from pyspark.sql.types import StructType, StructField, StringType, MapType  # Import necessary Spark SQL types
