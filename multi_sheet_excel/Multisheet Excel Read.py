@@ -4,6 +4,12 @@
 
 # COMMAND ----------
 
+# MAGIC %sql
+# MAGIC use catalog dev_edh;
+# MAGIC use schema dummy;
+
+# COMMAND ----------
+
 import os  # Import the os module for interacting with the operating system
 import json  # Import the json module for working with JSON data
 from pyspark.sql.types import StructType, StructField, StringType, MapType  # Import necessary Spark SQL types
@@ -17,7 +23,7 @@ mapSchema = StructType([
 ])
 
 maptypeData = []  # Initialize an empty list to store map type data
-source = '/dbfs/user/arundhuti/delta/'  # Define the source directory
+source = '/dbfs/user/arundhuti/delta/Dynamic_Excel_Source_Data/'  # Define the source directory
 file_type = 'xlsx'  # Define the file type to look for
 list_files = os.listdir(source)  # List all files in the source directory
 global acc  # Declare a global variable 'acc'
