@@ -745,64 +745,6 @@
         "width" : 4,
         "height" : 4
       }
-    }, {
-      "widget" : {
-        "name" : "c267c2f0",
-        "queries" : [ {
-          "name" : "main_query",
-          "query" : {
-            "datasetName" : "dbd5fa59",
-            "fields" : [ {
-              "name" : "sum(total_sales)",
-              "expression" : "SUM(`total_sales`)"
-            }, {
-              "name" : "country",
-              "expression" : "`country`"
-            }, {
-              "name" : "US_state",
-              "expression" : "`US_state`"
-            } ],
-            "disaggregated" : false
-          }
-        } ],
-        "spec" : {
-          "version" : 1,
-          "widgetType" : "choropleth-map",
-          "encodings" : {
-            "color" : {
-              "fieldName" : "sum(total_sales)",
-              "scale" : {
-                "type" : "quantitative"
-              },
-              "displayName" : "Sum of total_sales"
-            },
-            "region" : {
-              "regionType" : "mapbox-v4-admin",
-              "admin0" : {
-                "fieldName" : "country",
-                "type" : "field",
-                "geographicRole" : "admin0-unit-code",
-                "displayName" : "country"
-              },
-              "admin1" : {
-                "fieldName" : "US_state",
-                "type" : "field",
-                "geographicRole" : "admin1-iso-3166-2",
-                "displayName" : "US_state"
-              }
-            }
-          },
-          "mark" : {
-            "opacity" : 0.57
-          }
-        }
-      },
-      "position" : {
-        "x" : 0,
-        "y" : 19,
-        "width" : 4,
-        "height" : 10
-      }
     } ],
     "pageType" : "PAGE_TYPE_CANVAS"
   } ]

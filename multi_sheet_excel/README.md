@@ -1,77 +1,73 @@
-# 📊 Excel & CSV Metadata Extractor using Databricks & PySpark
+# 📊 Excel Metadata Extractor using Databricks & PySpark
 
 ## 🔍 Purpose
 
-This project provides a robust, dynamic solution for extracting both data and metadata from **Excel and CSV files**, regardless of their schema or structure. Built in **Databricks using PySpark**, it captures essential metadata and content from all sheets (in Excel) or records (in CSV), and stores them in **Delta format**.
+This project provides a robust, dynamic solution for extracting data and metadata from Excel files—regardless of schema or number of sheets—and storing them in Delta format using Databricks and PySpark. It is designed to consolidate all file-level and sheet-level details into a **single metadata table**, enabling centralized tracking, auditing, and downstream analysis.
 
-The main goal is to consolidate file-level and sheet-level metadata into a **single Delta table**, enabling centralized tracking, auditing, and downstream analytics.
+By organizing file content alongside metadata such as file name, sheet name, modification time, and load timestamp, this solution helps:
+- Maintain a **complete inventory of Excel data ingested over time**
+- Enable **audit trails and data lineage tracking**
+- Allow **query-based validation or monitoring** of file changes
+- Serve as a **reference hub** for data quality checks or ingestion history
+- Support integration with **dashboards or alerting systems** for failed/missing loads
 
-By organizing file content alongside metadata such as file name, sheet name (for Excel), modification time, and load timestamp, this solution helps:
-- Maintain a **complete inventory of all ingested Excel/CSV files**
-- Enable **audit trails and ingestion history**
-- Support **query-based validation or alerts** for missing or incorrect data
-- Serve as a **metadata reference hub** across projects
+This utility is especially useful when working with dynamic Excel file drops that may have varying structures or multiple sheets.
 
 ---
 
 ## ⚙️ Key Features
 
-- 📁 **Dynamic Source Directory Selection**  
-  A Databricks widget allows users to select the input folder at runtime.
+- 📁 **Dynamic Source Directory Selection**:  
+  Utilizes a Databricks widget to let users select the folder path where the Excel files are stored at runtime.
 
-- 📑 **Multi-Sheet Excel Handling**  
-  Automatically detects and reads all sheets from `.xlsx` files.
+- 📑 **Multi-Sheet Excel Handling**:  
+  Automatically detects and reads **all sheets** from each Excel file without hardcoding sheet names.
 
-- 📄 **CSV Support**  
-  Reads and processes CSV files seamlessly, with schema inferred dynamically.
+- 🔄 **Schema Agnostic**:  
+  Capable of handling Excel sheets with varying structures (column names, data types, etc.).
 
-- 🔄 **Schema Agnostic**  
-  Handles varying structures across files and sheets.
+- 🧾 **Metadata Capturing**:  
+  The output Delta table includes the following for each Excel sheet:
+  - File name
+  - Sheet name
+  - Last modified time
+  - Load timestamp
+  - Flattened data content (rows from the sheet)
 
-- 🧾 **Metadata Capturing**  
-  Each record written to the Delta table includes:
-  - `file_name`
-  - `sheet_name` (null for CSV)
-  - `file_type` (Excel / CSV)
-  - `last_modified_time`
-  - `load_timestamp`
-  - Data columns (schema varies per file)
-
-- 💾 **Delta Format Output**  
-  All content and metadata is appended to a Delta table for scalable querying.
+- 💾 **Delta Format Output**:  
+  Data and metadata are written to a centralized Delta table for scalable querying and downstream processing.
 
 ---
 
 ## 🧠 How It Works
 
 1. **User Input**  
-   A Databricks widget is used to provide the **source directory path**.
+   A widget allows users to provide the source directory path where Excel files are stored.
 
-2. **File Scanning**  
-   - The script scans the folder for `.xlsx` and `.csv` files.
-   - For Excel files: it reads **all sheets**.
-   - For CSV files: it reads the file as a flat table.
+2. **File & Sheet Iteration**  
+   - The script recursively lists all Excel files in the given location.
+   - For each Excel file, all sheet names are extracted.
+   - Each sheet is read dynamically into a DataFrame.
 
 3. **Metadata Enrichment**  
-   - Each record is tagged with:
+   - Each DataFrame is augmented with metadata columns:
      - `file_name`
-     - `sheet_name` (Excel only)
-     - `file_type` (Excel/CSV)
+     - `sheet_name`
      - `last_modified_time`
      - `load_timestamp`
 
-4. **Unified Write to Delta**  
-   - All extracted data and metadata are saved into a single Delta table.
+4. **Unified Write**  
+   - All data is appended to a Delta table for persistent storage and audit purposes.
 
 ---
 
 ## 📁 Output Table Example
 
-| file_name         | sheet_name | file_type | last_modified_time     | load_timestamp        | col1 | col2 | ... |
-|------------------|-------------|------------|-------------------------|------------------------|------|------|-----|
-| `Sales_Q2.xlsx`   | `Sheet1`    | Excel      | `2024-06-12 10:14:55`   | `2024-06-13 08:22:11`  | ...  | ...  | ... |
-| `Sales_Q2.xlsx`   | `Sheet2`    | Excel      | `2024-06-12 10:14:55`   | `2024-06-13 08:22:11`  | ...  | ...  | ... |
-| `customers.csv`   | `null`      | CSV        | `2024-07-01 09:45:29`   | `2024-07-01 09:47:03`  | ...  | ...  | ... |
+| file_name         | sheet_name | last_modified_time     | load_timestamp        | col1 | col2 | ... |
+|------------------|-------------|-------------------------|------------------------|------|------|-----|
+| `Report_June.xlsx` | `Sheet1`   | `2024-06-12 10:14:55`   | `2024-06-13 08:22:11`  | ...  | ...  | ... |
+| `Report_June.xlsx` | `Sheet2`   | `2024-06-12 10:14:55`   | `2024-06-13 08:22:11`  | ...  | ...  | ... |
+| `Report_July.xlsx` | `Summary`  | `2024-07-01 14:03:29`   | `2024-07-02 07:50:03`  | ...  | ...  | ... |
 
 ---
 
@@ -81,23 +77,23 @@ By organizing file content alongside metadata such as file name, sheet name (for
 - **PySpark**
 - **Databricks Widgets**
 - **Delta Lake**
-- **crealytics Spark Excel Library** (for `.xlsx` support)
 
 ---
 
 ## 📌 Use Cases
 
-- Tracking and managing ingestion of CSV and Excel files
-- Centralized data quality checks and validation logic
-- Historical data change tracking and reporting
-- Metadata lineage and compliance logging
-- Input layer for data catalogs or dashboards
+- Audit tracking of Excel file ingestion
+- Automated data lineage
+- Monitoring changes in source Excel data
+- Historical tracking of input files in a governed, queryable format
 
 ---
 
 ## 📣 Notes
 
-- Ensure the **Spark Excel package** (`com.crealytics:spark-excel_2.12`) is installed in your Databricks cluster.
-- The script supports `.xlsx` and `.csv` files only.
-- The output Delta table is append-mode and can be queried for auditing or alerting purposes.
+- This utility assumes the Excel files are compatible with Spark's Excel reading capabilities (i.e., `.xlsx`)
+- Schema may vary between sheets and files; the script handles this dynamically
+- Ensure the appropriate Spark Excel libraries (`com.crealytics:spark-excel`) are available in your Databricks environment
+
+---
 
